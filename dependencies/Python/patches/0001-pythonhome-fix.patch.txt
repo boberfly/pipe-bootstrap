@@ -1,0 +1,46 @@
+From a6b0cee66c9f92ab84b660f43b9068b008b58a66 Mon Sep 17 00:00:00 2001
+From: Alex Fuller <boberfly@gmail.com>
+Date: Tue, 18 Jun 2019 21:22:10 -0700
+Subject: [PATCH 1/1] pythonhome fix
+
+---
+ CMakeLists.txt              | 4 ++--
+ cmake/python/CMakeLists.txt | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c451e4e..44b53d0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -448,13 +448,13 @@ file(WRITE ${CONFIG_BUILD_DIR}/PythonTargets.cmake "")
+ 
+ # Define python executable wrapper command to ensure
+ # python executable resolves the expected python library.
+-set(PYTHON_WRAPPER_COMMAND )
++set(PYTHON_WRAPPER_COMMAND env PYTHONHOME=${PROJECT_BINARY_DIR} PYTHONPATH=${PROJECT_BINARY_DIR}/${PYTHONHOME})
+ if(BUILD_LIBPYTHON_SHARED AND UNIX)
+     set(_envvar LD_LIBRARY_PATH)
+     if(APPLE)
+         set(_envvar DYLD_LIBRARY_PATH)
+     endif()
+-    set(PYTHON_WRAPPER_COMMAND env ${_envvar}=${PROJECT_BINARY_DIR}/${LIBPYTHON_LIBDIR})
++    set(PYTHON_WRAPPER_COMMAND ${PYTHON_WRAPPER_COMMAND} ${_envvar}=${PROJECT_BINARY_DIR}/${LIBPYTHON_LIBDIR})
+ endif()
+ 
+ # Add extension modules
+diff --git a/cmake/python/CMakeLists.txt b/cmake/python/CMakeLists.txt
+index cdb291e..90e4abe 100644
+--- a/cmake/python/CMakeLists.txt
++++ b/cmake/python/CMakeLists.txt
+@@ -59,7 +59,7 @@ if(UNIX AND PY_VERSION VERSION_GREATER "2.7.4")
+     add_custom_command(
+         OUTPUT ${BIN_BUILD_DIR}/pybuilddir.txt ${EXTENSION_BUILD_DIR}/${_sysconfigdata_py}
+         COMMAND ${PYTHON_WRAPPER_COMMAND}
+-          ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:python> -E -S -m sysconfig --generate-posix-vars
++          ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:python> -S -m sysconfig --generate-posix-vars
+         COMMAND ${CMAKE_COMMAND}
+           -DBIN_BUILD_DIR:PATH=${BIN_BUILD_DIR}
+           -DSYSCONFIGDATA_PY:STRING=${_sysconfigdata_py}
+-- 
+2.17.1
+

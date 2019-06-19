@@ -213,6 +213,9 @@ if args.docker and not os.path.exists( "/.dockerenv" ) :
 pythonEnvs = "PYTHONHOME=/install/{platform} PYTHONPATH=/install/{platform}/lib/python2.7 LD_LIBRARY_PATH=/install/{platform}/lib".format( **formatVariables )
 
 depCommands = [
+	"curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py",
+	"python get-pip.py".format( env=pythonEnvs, **formatVariables ),
+	"pip install cmake".format( env=pythonEnvs, **formatVariables ),
 	"cmake -E make_directory install/{platform}".format( **formatVariables ),
 
 	"cd dependencies && "
@@ -222,7 +225,6 @@ depCommands = [
 ]
 
 commands = [
-	"curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py",
 	"{env} /install/{platform}/bin/python get-pip.py".format( env=pythonEnvs, **formatVariables ),
 	"{env} /install/{platform}/bin/pip install bleeding-rez --pre".format( env=pythonEnvs, **formatVariables ),
 

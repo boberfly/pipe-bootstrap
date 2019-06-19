@@ -2,43 +2,31 @@
 
 	"downloads" : [
 
-		"https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz",
+		"https://github.com/python-cmake-buildsystem/python-cmake-buildsystem/archive/master.tar.gz",
+		"https://www.python.org/ftp/python/2.7.16/Python-2.7.16.tgz",
 
 	],
-
-	"license" : "LICENSE",
 
 	"commands" : [
+		"cmake -E rename ../Python-2.7.16 ./Python-2.7.16",
 
-		"./configure --prefix={buildDir} {libraryType} --enable-unicode=ucs4",
-		"make -j {jobs}",
-		"make install",
+		"cmake -E make_directory build",
 
+		"cd build && cmake"
+			" -Wno-dev"
+			" -G {cmakeGenerator}"
+			" -D CMAKE_BUILD_TYPE={cmakeBuildType}"
+			" -D CMAKE_INSTALL_PREFIX={buildDir}"
+			" -D PYTHON_VERSION=2.7.16"
+			" -D DOWNLOAD_SOURCES=OFF"
+			" -D BUILD_LIBPYTHON_SHARED=OFF"
+			" -D BUILD_EXTENSIONS_AS_BUILTIN=ON"
+			" -D Py_UNICODE_SIZE=4"
+			" -D USE_LIB64=ON"
+			" -D INSTALL_TEST=OFF"
+			" ..",
+		"cd build && cmake --build . --config {cmakeBuildType} --target install -- -j {jobs}",
 	],
-
-	"variables" : {
-
-		"libraryType" : "--enable-shared",
-
-	},
-
-	"platform:osx" : {
-
-		"variables" : {
-
-			"libraryType" : "--enable-framework={buildDir}/lib",
-
-		},
-
-		"symbolicLinks" : [
-
-			( "{buildDir}/bin/python", "../lib/Python.framework/Versions/Current/bin/python" ),
-			( "{buildDir}/bin/python2", "../lib/Python.framework/Versions/Current/bin/python2" ),
-			( "{buildDir}/bin/python2.7", "../lib/Python.framework/Versions/Current/bin/python2.7" ),
-
-		],
-
-	},
 
 	"platform:windows" : {
 
@@ -52,7 +40,7 @@
 		"commands" : [
 			"cmake -E rename ../python-cmake-buildsystem-master ./python-cmake-buildsystem",
 
-			"cmake -E make_directory gafferBuild",
+			"cmake -E make_directory build",
 
 			"cmake"
 				" -Wno-dev"
