@@ -225,15 +225,17 @@ depCommands = [
 ]
 
 commands = [
-	"{env} /install/{platform}/bin/python get-pip.py".format( env=pythonEnvs, **formatVariables ),
-	"{env} /install/{platform}/bin/pip install bleeding-rez --pre".format( env=pythonEnvs, **formatVariables ),
+	"cd /install/{platform}/bin && {env} ./python /get-pip.py".format( env=pythonEnvs, **formatVariables ),
+	"cd /install/{platform}/bin && {env} ./pip install bleeding-rez --pre".format( env=pythonEnvs, **formatVariables ),
+	"cd /install/{platform}/bin && /fix-shebang rez* pip _rez* bez easy_install wheel".format( **formatVariables ),
 
+	"rm -f /install/{platform}/lib/python2.7/config/libpython2.7.a".format( **formatVariables ),
 	"cd /install/{platform} && "
 	"rm -f bin/openssl && "
 	"rm -rf ssl && rm -rf share && "
-	"rm -f lib/libcrypto.a lib/libssl.a lib/libz.a && "
+	"rm -f lib/libcrypto.a lib/libssl.a lib/libz.* lib/libpython2.7.a && "
 	"rm -rf lib/engines lib/pkgconfig && "
-	"rm -rf include/openssl && rm -f include/zconf.h include/zlib.h".format( **formatVariables ),
+	"rm -rf include".format( **formatVariables ),
 
 	"cd /install/{platform} && "
 	"tar -c -z -f /tmp/intermediate.tar * && "

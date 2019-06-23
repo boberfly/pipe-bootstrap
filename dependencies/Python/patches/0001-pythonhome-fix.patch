@@ -1,12 +1,13 @@
-From a6b0cee66c9f92ab84b660f43b9068b008b58a66 Mon Sep 17 00:00:00 2001
+From 2e60e46355d0b725de18cf856b9d2c7056a99fb5 Mon Sep 17 00:00:00 2001
 From: Alex Fuller <boberfly@gmail.com>
 Date: Tue, 18 Jun 2019 21:22:10 -0700
 Subject: [PATCH 1/1] pythonhome fix
 
 ---
- CMakeLists.txt              | 4 ++--
- cmake/python/CMakeLists.txt | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ CMakeLists.txt                 | 4 ++--
+ cmake/libpython/CMakeLists.txt | 4 ++--
+ cmake/python/CMakeLists.txt    | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index c451e4e..44b53d0 100644
@@ -28,6 +29,24 @@ index c451e4e..44b53d0 100644
  endif()
  
  # Add extension modules
+diff --git a/cmake/libpython/CMakeLists.txt b/cmake/libpython/CMakeLists.txt
+index 6b183b2..e7993f9 100644
+--- a/cmake/libpython/CMakeLists.txt
++++ b/cmake/libpython/CMakeLists.txt
+@@ -411,11 +411,11 @@ set(LIBPYTHON_FROZEN_SOURCES
+ )
+ add_custom_command(
+   OUTPUT ${LIBPYTHON_FROZEN_SOURCES}
+-  COMMAND
++  COMMAND ${PYTHON_WRAPPER_COMMAND}
+     ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:_freeze_importlib>
+       ${SRC_DIR}/Lib/importlib/_bootstrap_external.py
+       ${SRC_DIR}/Python/importlib_external.h
+-  COMMAND
++  COMMAND ${PYTHON_WRAPPER_COMMAND}
+     ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:_freeze_importlib>
+       ${SRC_DIR}/Lib/importlib/_bootstrap.py
+       ${SRC_DIR}/Python/importlib.h
 diff --git a/cmake/python/CMakeLists.txt b/cmake/python/CMakeLists.txt
 index cdb291e..90e4abe 100644
 --- a/cmake/python/CMakeLists.txt
