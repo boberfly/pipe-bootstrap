@@ -17,7 +17,7 @@ RUN yum install -y centos-release-scl && \
 # will use the compiler we want.
 
 COPY dependencies ./dependencies
+COPY scripts ./
 COPY build.py ./
-COPY fix-shebang ./fix-shebang
 
 ENTRYPOINT [ "scl", "enable", "devtoolset-6", "--", "bash" ]

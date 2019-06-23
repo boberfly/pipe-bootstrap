@@ -143,6 +143,7 @@ formatVariables = {
 	"cxx" : args.forceCxxCompiler,
 	"c" : args.forceCCompiler,
 	"output" : os.path.abspath( args.output ),
+	"cmakeBuildType" : "Release",
 }
 
 # Output directory
@@ -228,8 +229,11 @@ commands = [
 	"cd /install/{platform}/bin && {env} ./python /get-pip.py".format( env=pythonEnvs, **formatVariables ),
 	"cd /install/{platform}/bin && {env} ./pip install bleeding-rez --pre".format( env=pythonEnvs, **formatVariables ),
 	"cd /install/{platform}/bin && /fix-shebang rez* pip _rez* bez easy_install wheel".format( **formatVariables ),
+	"mv /run /install/{platform}/run".format( **formatVariables ),
 
 	"rm -f /install/{platform}/lib/python2.7/config/libpython2.7.a".format( **formatVariables ),
+	"cd /install/{platform}/bin && mv python rezpy && "
+	"rm -f python2.7 python2 && ln -s rezpy rezpy2 && ln -s rezpy rezpy2.7".format( **formatVariables ),
 	"cd /install/{platform} && "
 	"rm -f bin/openssl && "
 	"rm -rf ssl && rm -rf share && "

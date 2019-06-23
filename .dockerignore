@@ -3,4 +3,4 @@
 # And then explicitly include just what we want
 !dependencies
 !build.py
-!fix-shebang
+!scripts

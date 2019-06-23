@@ -1,3 +1,0 @@
-#!/usr/bin/bash
-#https://stackoverflow.com/questions/20095351/shebang-use-interpreter-relative-to-the-script-path
-sed -i '1 s|^#!.*|#!/usr/bin/awk BEGIN{a=ARGV[1];b="";for(i=1;i<ARGC;i++){b=b"\t"ARGV[i];}sub(/[a-z_.\-]+$/,"python",a);system(a""b)}|' $@
