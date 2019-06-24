@@ -24,6 +24,8 @@
 			" -D Py_UNICODE_SIZE=4"
 			" -D USE_LIB64=OFF"
 			" -D INSTALL_TEST=OFF"
+			" -D OPENSSL_INCLUDE_DIR={buildDir}/include"
+			" -D OPENSSL_LIBRARIES={buildDir}/libcrypto.a {buildDir}/libssl.a"
 			" ..",
 		"cd build && cmake --build . --config {cmakeBuildType} --target install -- -j {jobs}",
 		"cmake -E copy ./Python-2.7.16/LICENSE {buildDir}/doc/licenses/Python",

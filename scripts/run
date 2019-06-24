@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo 'packages_path = ["~/packages", "'$(dirname $0)'/packages"]' > /tmp/myrezconfig.py
-REZ_CONFIG_FILE=/tmp/myrezconfig.py PATH=`dirname $0`/bin:$PATH x-terminal-emulator
+echo 'packages_path = ["~/packages", "'$(dirname $(readlink -f $0))'/packages"]' > /tmp/myrezconfig.py
+REZ_CONFIG_FILE=/tmp/myrezconfig.py PATH=`dirname $(readlink -f $0)`/bin:$PATH x-terminal-emulator

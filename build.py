@@ -211,12 +211,13 @@ if args.docker and not os.path.exists( "/.dockerenv" ) :
 
 # Perform the build.
 
-pythonEnvs = "PYTHONHOME=/install/{platform} PYTHONPATH=/install/{platform}/lib/python2.7 LD_LIBRARY_PATH=/install/{platform}/lib".format( **formatVariables )
+pythonEnvs = "REZ_CONFIG_FILE=/tmp/myrezconfig.py PATH=/install/{platform}/bin:$PATH PYTHONHOME=/install/{platform} PYTHONPATH=/install/{platform}/lib/python2.7 LD_LIBRARY_PATH=/install/{platform}/lib".format( **formatVariables )
 
 depCommands = [
 	"curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py",
-	"python get-pip.py".format( env=pythonEnvs, **formatVariables ),
-	"pip install cmake".format( env=pythonEnvs, **formatVariables ),
+	"python get-pip.py",
+	"pip install cmake",
+	"git clone https://github.com/mottosso/rez-pipz.git",
 	"cmake -E make_directory install/{platform}".format( **formatVariables ),
 
 	"cd dependencies && "
@@ -229,11 +230,24 @@ commands = [
 	"cd /install/{platform}/bin && {env} ./python /get-pip.py".format( env=pythonEnvs, **formatVariables ),
 	"cd /install/{platform}/bin && {env} ./pip install bleeding-rez --pre".format( env=pythonEnvs, **formatVariables ),
 	"cd /install/{platform}/bin && /fix-shebang rez* pip _rez* bez easy_install wheel".format( **formatVariables ),
-	"mv /run /install/{platform}/run".format( **formatVariables ),
+	"mv /run /install/{platform}/run && "
+	"mkdir /install/{platform}/packages".format( **formatVariables ),
 
 	"rm -f /install/{platform}/lib/python2.7/config/libpython2.7.a".format( **formatVariables ),
 	"cd /install/{platform}/bin && mv python rezpy && "
 	"rm -f python2.7 python2 && ln -s rezpy rezpy2 && ln -s rezpy rezpy2.7".format( **formatVariables ),
+
+	"echo 'packages_path = [\"/install/{platform}/packages\"]' > /tmp/myrezconfig.py".format( **formatVariables ),
+	"cd /install/{platform}/bin && "
+	"{env} ./rez bind -i /install/{platform}/packages platform && "
+	"{env} ./rez bind -i /install/{platform}/packages arch && "
+	"{env} ./rez bind -i /install/{platform}/packages os".format( env=pythonEnvs, **formatVariables ),
+	"mv /python /install/{platform}/packages/ && "
+	"cd /install/{platform}/packages/python/2.7.16/platform-linux/arch-x86_64/bin && ln -s ../../../../../../bin/rezpy python && rm .keepme && "
+	"cd /install/{platform}/packages/python/2.7.16/platform-linux/arch-x86_64/python && ln -s ../../../../../../lib/python2.7 lib && rm .keepme && "
+	"cd /install/{platform}/packages/python/2.7.16/platform-linux/arch-x86_64/python && ln -s ../../../../../../lib/python2.7/site-packages extra && "
+	"cd /rez-pipz && {env} PYTHONHTTPSVERIFY=0 /install/{platform}/bin/rez build --install -p /install/{platform}/packages".format( env=pythonEnvs, **formatVariables ),
+
 	"cd /install/{platform} && "
 	"rm -f bin/openssl && "
 	"rm -rf ssl && rm -rf share && "
